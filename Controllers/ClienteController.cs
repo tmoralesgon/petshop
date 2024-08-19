@@ -39,26 +39,7 @@ public class ClienteController : Controller
     [HttpPost]
     public IActionResult Index(Cliente cliente)
     {
-        //Cliente newCliente = new Cliente();
-        //newCliente.Nombre = cliente.Nombre;
-        //newCliente.Apellido = cliente.Apellido;
-        //newCliente.FechaNacimiento = cliente.FechaNacimiento;
-        //newCliente.Email = cliente.Email;
-        //newCliente.Direccion = cliente.Direccion;
-        //newCliente.CodigoPostal = cliente.CodigoPostal;
-
-        //context.Clientes.Add(cliente);
-
-        //try 
-        //{
-        //    context.SaveChanges();
-        //}
-        //catch(Exception ex) 
-        //{
-        //    var i = 0;
-        //}
-
-        return View(/*cliente*/);
+        return View();
     }
     public async Task<IActionResult> Clientes_Read([DataSourceRequest] DataSourceRequest request)
     {
@@ -68,6 +49,26 @@ public class ClienteController : Controller
 
     }
 
+    [HttpGet]
+    public IActionResult Ficha(int clienteId)
+    {
+        var cliente = new Cliente();
+        try
+        {
+            if (clienteId != 0)
+            {
+                //ViewBag.pedidos = PedidoRepository.GetPedidos(token);
+                cliente = ClienteRepository.GetCliente(clienteId);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Ha habido un error: '{e}'");
+        }
+
+        return View(cliente);
+    }
+
     [HttpPost]
     public IActionResult FileUpload(IFormFile file)
     {
@@ -75,14 +76,6 @@ public class ClienteController : Controller
         var cliente = serializer.Deserialize(file.OpenReadStream()) as Cliente;
         DateFormat dateFormat = new DateFormat();
         cliente.FechaNacimiento = cliente.FechaNacimiento;
-
-        //var clientes = context.Clientes.Where(c => c.Nombre == "Pere").FirstOrDefault(); Ejemplo CON lambda expression
-
-        //var clientes2 = (from c in context.Clientes where c.Nombre == "Pere" select c).FirstOrDefault(); Ejemplo SIN lambda expression
-
-        //XDocument
-
-        //return Json(new { Result = "true" });
 
         return View("Index", cliente);
     } 

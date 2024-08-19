@@ -12,5 +12,10 @@ namespace GestorPetshop.Repositories
             var clientes = context.Clientes.ToList();
             return clientes;
         }
+
+        public static Cliente? GetCliente(int id)
+        {
+            return context.Clientes.Where(c => c.Id == id).FirstOrDefault();
+        }
     }
 }

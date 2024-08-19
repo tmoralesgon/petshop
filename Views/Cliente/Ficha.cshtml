@@ -1,0 +1,38 @@
+﻿<div class="d-flex justify-content-center">
+    <h3>Detalles del Cliente</h3>
+</div><br />
+<div class="d-flex justify-content-center form-cliente">
+    @using (Html.BeginForm("Ficha", "Cliente", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="row">
+            <div class="col">
+                <div class="mb-3">
+                    <label for="Nombre" class="form-label">Nombre:</label>
+                    <input type="text" class="form-control" id="Nombre" name="Nombre" value="@Model.Nombre">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="Apellido" class="form-label">Apellido:</label>
+                    <input type="text" class="form-control" id="Apellido" name="Apellido" value="@Model.Apellido">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="Email" class="form-label">Email:</label>
+                    <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email">
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3 mt-3">
+                    <label for="Direccion" class="form-label">Direccion:</label>
+                    <input type="text" class="form-control" id="Direccion" name="Direccion" value="@Model.Direccion">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="CodigoPostal" class="form-label">CodigoPostal:</label>
+                    <input type="number" class="form-control" id="CodigoPostal" name="CodigoPostal" value="@Model.CodigoPostal">
+                </div>
+            </div>
+            <input type="hidden" class="form-control" id="Id" name="Id" value="@Model.Id">
+        </div>
+        <span class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </span>
+    }
+</div>
