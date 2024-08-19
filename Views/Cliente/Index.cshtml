@@ -9,7 +9,6 @@
     <span class="text-center">
         <h2>Listado de clientes</h2>
     </span>
-
     @(Html.Kendo().Grid<GestorPetshop.Models.Cliente>()
     .Name("Grid")
     .Columns(columns =>
@@ -18,7 +17,7 @@
         columns.Bound(cliente => cliente.Nombre).Title("Nombre").Width(320).ClientTemplate("<span id=\"cliente-#:data.Nombre#\"></span><a class=\"row-main-anchor\" href='/Cliente/Ficha?clienteId=#:data.Id#'>#:data.Id == null? 'Sin id' : data.Nombre#</a>").Visible(true);
         columns.Bound(cliente => cliente.Apellido).Title("Apellido").Width(150).Visible(true);
         columns.Bound(cliente => cliente.Direccion).Title("Direccion").Width(150).MinScreenWidth(800).Visible(true);
-        columns.Bound(cliente => cliente.Email).EditorTemplateName("Email")@* .ClientTemplate("#=templateCell(data)#") *@.Width(180).Visible(true);
+        columns.Bound(cliente => cliente.Email).EditorTemplateName("Email").Width(180).Visible(true);
         columns.Bound(cliente => cliente.CodigoPostal).Width(130).Visible(true);
         columns.Command(command => command.Destroy()).Width(160);
     })
@@ -26,7 +25,6 @@
     {
             toolbar.Custom().Text("Crear").HtmlAttributes(new { id = "toolbarCrear", @class = "floatRight" });
     }) 
-    //.Editable(editable => editable.Mode(GridEditMode.InCell))
     .Pageable()
     .Groupable()
     .Filterable()
@@ -35,7 +33,6 @@
         .Batch(true)
         .PageSize(20)
         .ServerOperation(false)
-        //.Events(events => events.Error("error_handler"))
         .Model(model =>
         {
             model.Id(p => p.Id);
