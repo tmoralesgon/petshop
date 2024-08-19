@@ -1,0 +1,204 @@
+﻿@model GestorPetshop.ViewModels.JuguetesViewModel
+
+@* <table>
+
+    @foreach (var juguete in Model.ListadoJuguetes)
+    {
+        <tr>blabla bla @juguete.Title</tr>
+
+    }
+
+    <tr>@Model.ListadoJuguetes</tr>
+
+    <tr>@ViewBag.cosas</tr>
+</table> *@
+<div class="row">
+    <table style="width:50%;">
+        <thead>
+            <tr>
+                <th scope="col" style="width:10%"><button id="insert_btn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#insertUpdateModal">Añadir</button></th>
+                <th scope="col" style="width:10%"><button id="update_btn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#insertUpdateModal">Modificar</button></th>
+                <th scope="col"><button id="delete_btn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">Eliminar</button></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<div class="row">
+    <table class="arrowes-table table-striped" style="width:50%;">
+        <thead>
+            <tr>
+                <th scope="col" style="width:10%"></th>
+                <th scope="col"></th>
+                <th scope="col" style="width:30%">Title</th>
+                <th scope="col" style="width:30%">Precio</th>
+                <th scope="col" style="width:30%">Stock</th>
+            </tr>
+        </thead>
+
+        <tbody id="tableBody">
+            @foreach (var juguete in Model.ListadoJuguetes.OrderBy(item => item.Precio))
+            {
+                <tr id="row_@juguete.Id">
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="radio_@juguete.Id" value="@juguete.Id">
+                            <label class="form-check-label" for="radio_@juguete.Id"></label>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <input id="jugueteId_@juguete.Id" type="hidden" name="jugueteId_@juguete.Id" value="@juguete.Id">
+                        </div>
+                    </td>
+                    <td id="jugueteTitle_@juguete.Id">@juguete.Title</td>
+                    <td id="juguetePrecio_@juguete.Id">@juguete.Precio.ToString("0.00")</td>
+                    <td id="jugueteStock_@juguete.Id">@juguete.Stock</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Update/Insert -->
+<div class="modal fade" id="insertUpdateModal" tabindex="-1" aria-labelledby="insertUpdateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="insertUpdateModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="jugueteId" id="jugueteId" value="" />
+                <p>Juguete Title</p>
+                <input type="text" name="jugueteTitle" id="jugueteTitle" value="" />
+                <p>Juguete Precio</p>
+                <input type="number" name="juguetePrecio" id="juguetePrecio" value="" />
+                <p>Juguete Stock</p>
+                <input type="number" step="1" pattern="\d+" name="jugueteStock" id="jugueteStock" value="" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="save_btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Delete -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Seguro que quieres eliminar el elemento?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="ok_btn">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+    $( "#save_btn" ).bind( "click", function() {
+        // $.ajax({
+        //     type: "POST",
+        //     url: '@Url.Action("Insertar", "Juguete")',
+        //     //contentType: "application/json; charset=utf-8",
+        //     data: { 'title': "yourdata", 'precio': 3.3, 'stock': 54 },
+        //     success: function(result) { alert(result); },
+        //     error: function(result) { alert(result); }
+        // });
+        var jugueteId = $('input[name="flexRadioDefault"]:checked').val();
+        var model = getJugueteModel(jugueteId);
+        //var action = model.jugueteId ? "Modificar" : "Insertar";
+
+        $.ajax({
+            type: "POST",
+            //url: '@Url.Action("Modificar", "Juguete")',
+            url: model.Id ? '@Url.Action("Modificar", "Juguete")' : '@Url.Action("Insertar", "Juguete")',
+            data:model,
+            success: function (result) {
+                insertUpdateRow(result);
+            }
+        });
+
+    });
+
+    $("#insert_btn").bind("click", function () {
+        $(".modal-body #jugueteId").val("");
+        $(".modal-body #jugueteTitle").val("");
+        $(".modal-body #juguetePrecio").val("");
+        $(".modal-body #jugueteStock").val("");
+    });
+
+    $( "#update_btn" ).bind( "click", function() {
+        var jugueteId = $('input[name="flexRadioDefault"]:checked').val();
+        var jugueteTitle = $("#jugueteTitle_" + jugueteId).html();
+        var juguetePrecio = $("#juguetePrecio_" + jugueteId).html();
+        var jugueteStock = $("#jugueteStock_" + jugueteId).html();
+        $(".modal-body #jugueteId").val(jugueteId);
+        $(".modal-body #jugueteTitle").val(jugueteTitle);
+        $(".modal-body #juguetePrecio").val(juguetePrecio);
+        $(".modal-body #jugueteStock").val(jugueteStock);
+    });
+
+    $("#ok_btn").bind("click", function () {
+        var jugueteId = $('input[name="flexRadioDefault"]:checked').val();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Eliminar", "Juguete")',
+            data: {'id': jugueteId},
+            success: function (result) {
+                $("#row_" + $('input[name="flexRadioDefault"]:checked').val()).remove();
+                alert(result);
+            }
+        });
+    });
+
+    function getJugueteModel(jugueteId) {
+        var model = {};
+        model.Id = parseInt($("#jugueteId").val());
+        model.Title = $("#jugueteTitle").val();
+        model.Precio = $("#juguetePrecio").val().replace(".",",");
+        model.Stock = $("#jugueteStock").val();
+        return model;
+    }
+
+    function insertUpdateRow(juguete){
+        var rowExists = $("#row_" + juguete.id).length;
+        if (rowExists) {
+            $("#jugueteTitle_" + juguete.id).html(juguete.title);
+            $("#juguetePrecio_" + juguete.id).html(juguete.precio);
+            $("#jugueteStock_" + juguete.id).html(juguete.stock);
+
+        } else {
+            
+                $("#tableBody").append(
+                    "<tr id='row_" + juguete.id + "'>" +
+                        "<td>" +
+                            "<div class='form-check'>" +
+                    "<input class='form-check-input' type = 'radio' name = 'flexRadioDefault' id = 'radio_" + juguete.id + "' value = '" + juguete.id + "' >" +
+                    "<label class='form-check-label' for= 'radio_" + juguete.id + "' > </label>" +
+                            "</div>" +
+                        "</td>" +
+                        "<td>" +
+                        "<div>" +
+                    "<input id= 'jugueteId_" + juguete.id + "' type = 'hidden' name = 'jugueteId_" + juguete.id + "' value = " + juguete.id + " >" +
+                        "</div>" +
+                        "</td>" +
+                    "<td id = 'jugueteTitle_" + juguete.id + "' > " + juguete.title + "</td>" +
+                    "<td id = 'juguetePrecio_" + juguete.id + "' > " + juguete.precio.toFixed(2).toString().replace('.', ',') + "</td>" +
+                    "<td id = 'jugueteStock_" + juguete.id + "' > " + juguete.stock + "</td>" +
+                    "</tr>"
+                );
+        }
+    }
+</script>
+}

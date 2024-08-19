@@ -1,0 +1,142 @@
+﻿@model GestorPetshop.Models.Cliente
+@using System.Globalization;
+<div class="container w-50">
+    <span class="text-center">
+        <h2>Listado de clientes</h2>
+    </span>
+    
+    @* @using (Html.BeginForm("FileUpload", "Cliente", FormMethod.Post, new { enctype = "multipart/form-data", id = "fileForm" }))
+    {
+    <div>
+    <label for="xmlFile" class="form-label">Selecciona XML para rellenar los campos automáticamente</label><br />
+    <input type="file" name="xmlFile" id="xmlFile" />
+    <input type="submit" value="Submit" class="btn btn-primary" id="SubmitXML" />
+    </div>
+
+
+    } *@
+@*     <div class="text-center">
+        @using (Html.BeginForm("FileUpload", "Cliente", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <span class="help-block text-secondary">Sube un archivo XML para obtener los datos automáticamente</span>
+            <input type="file" class="form-control" name="file" />
+            <button type="submit" value="Upload" class="btn btn-outline-secondary">Subir</button>
+        }
+    </div> *@
+    @* using (@Html.BeginForm("myMethod", "Home", FormMethod.Post))
+    {
+    //...
+    @Html.HiddenFor(m => m.Nombre);
+    @Html.TextBoxFor(m => m.Nombre)
+    } *@
+  @*   <form method="post" action="@Url.Action("Index", "Cliente")"> *@
+@*         <div class="mb-3">
+            <label for="Nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" name="Nombre" value="@Model.Nombre">
+        </div>
+        <div class="mb-3">
+            <label for="Apellido" class="form-label" required>Apellido</label>
+            <input type="text" class="form-control" name="Apellido" value="@Model.Apellido">
+        </div>
+        <div class="mb-3">
+            <label for="FechaNacimiento" class="form-label">Fecha de nacimiento</label>
+            @{
+                CultureInfo provider = CultureInfo.InvariantCulture;
+                var invalidDate = DateTime.ParseExact("01/01/0001", "dd/MM/yyyy", provider).Add(DateTime.Now.TimeOfDay);
+                if (invalidDate.Date.ToString("dd/MM/yyyy") == Model.FechaNacimiento.ToString("dd/MM/yyyy"))
+                {
+                    Model.FechaNacimiento = DateTime.Now;
+                }
+            }
+            <input type="text" class="form-control" name="FechaNacimiento" value="@Model.FechaNacimiento.ToString("dd/MM/yyyy")">
+        </div>
+        <div class="mb-3">
+            <label for="Email" class="form-label">Email</label>
+            <input type="email" class="form-control" name="Email" aria-describedby="emailHelp" value="@Model.Email">
+            <div id="emailHelp" class="form-text">No se compartirá este email con nadie</div>
+        </div>
+        <div class="mb-3">
+            <label for="Direccion" class="form-label">Direccion</label>
+            <textarea class="form-control" name="Direccion" rows="3" value="@Model.Direccion">@Model.Direccion</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="CodigoPostal" class="form-label">Codigo postal</label>
+            <input type="text" class="form-control" name="CodigoPostal" value="@Model.CodigoPostal">
+        </div> *@
+        @* <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="terminos" required>
+        <label class="form-check-label" for="terminos">Acepto los términos y condiciones</label>
+        </div> *@
+    @* <button type="submit" class="btn btn-primary">Insertar cliente</button> value="Submit" *@
+@*     </form> *@
+    @(Html.Kendo().Grid<GestorPetshop.Models.Cliente>()
+    .Name("Grid")
+    .Columns(columns =>
+    {
+        columns.Bound(c => c.Id).Visible(false);
+        columns.Bound(cliente => cliente.Nombre).Title("Nombre").Width(320)@* .ClientTemplate("<span id=\"cliente-#:data.Nombre#\"></span><a class=\"row-main-anchor\" href='/Cliente/Ficha?clienteId=#:data.Id#'>#:data.Id == null? 'Sin id' : data.Nombre#</a>") *@.Visible(true);
+        columns.Bound(cliente => cliente.Apellido).Title("Apellido").Width(150).Visible(true);
+        columns.Bound(cliente => cliente.Direccion).Title("Direccion").Width(150).MinScreenWidth(800).Visible(true);
+        columns.Bound(cliente => cliente.Email).EditorTemplateName("Email")@* .ClientTemplate("#=templateCell(data)#") *@.Width(180).Visible(true);
+        columns.Bound(cliente => cliente.CodigoPostal).Width(130).Visible(true);
+        columns.Command(command => command.Destroy()).Width(160);
+    })
+    .ToolBar(toolbar =>
+    {
+        //toolbar.Create().Text("Crear").HtmlAttributes(new { @id = "toolbarCrear" }); ;
+        //toolbar.Save();
+        //toolbar.Custom().Text("Crear").HtmlAttributes(new { id = "toolbarCrear", @class = "floatRight" });
+    }) 
+    //.Editable(editable => editable.Mode(GridEditMode.InCell))
+    .Pageable()
+    //.Navigatable()
+    //.Sortable()
+    .Groupable()
+    .Filterable()
+    //.Scrollable()
+    //.Events(events => events.Sort("onSort"))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Batch(true)
+        .PageSize(20)
+        .ServerOperation(false)
+        //.Events(events => events.Error("error_handler"))
+        .Model(model =>
+        {
+            model.Id(p => p.Id);
+            //model.Field(p => p.Nombre).Editable(false);
+        })
+        .Read(read => read.Action("Clientes_Read", "Cliente"))
+        //.Create(read => read.Action("Clientes_Create", "Cliente"))
+        //.Update(read => read.Action("Clientes_Update", "Cliente"))
+        //.Destroy(read => read.Action("Clientes_Delete", "Cliente"))
+    )
+)
+</div>
+
+@section scripts {
+    <script>
+        // WIP
+        // $("#SubmitXML").click(function (e) {
+        //     //$('#fileForm').find("#xmlFile").val()
+        //     var formData = new FormData($('#fileForm').get(0));
+        //     e.preventDefault();
+        //     $.ajax({
+        //         type: "post",
+        //         url: '@Url.Action("FileUpload", "Cliente")',
+        //         mimeType: "multipart/form-data",
+        //         dataType: 'xml',
+        //         contentType: "text/xml",
+        //         data: { "FormData": FormData },
+        //         success: function (data) {
+        //             //console.log(data.Result);
+        //             console.log(data.find('cliente[Nombre="Tatiana"]').attr('Apellido'));
+        //         }
+        //     });
+        // });
+
+        //
+
+
+    </script>
+}
