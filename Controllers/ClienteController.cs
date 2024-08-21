@@ -70,6 +70,31 @@ public class ClienteController : Controller
     }
 
     [HttpPost]
+    public IActionResult Ficha(Cliente cliente)
+    {
+        var newCli = cliente;
+        try
+        {
+            if (cliente.Id != 0)
+            {
+                newCli = ClienteRepository.UpdateCliente(newCli);
+            }
+            else
+            {
+                newCli = ClienteRepository.InsertCliente(newCli);
+            }
+            //context.Update(cliente);
+            //context.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ha habido un error: '{ex}'");
+        }
+
+        return View(newCli);
+    }
+
+    [HttpPost]
     public IActionResult FileUpload(IFormFile file)
     {
         var serializer = new XmlSerializer(typeof(Cliente));

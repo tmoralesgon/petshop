@@ -1,4 +1,5 @@
-﻿<div class="d-flex justify-content-center">
+﻿@using System.Globalization;
+<div class="d-flex justify-content-center">
     <h3>Detalles del Cliente</h3>
 </div><br />
 <div class="d-flex justify-content-center form-cliente">
@@ -27,6 +28,18 @@
                 <div class="mb-3 mt-3">
                     <label for="CodigoPostal" class="form-label">CodigoPostal:</label>
                     <input type="number" class="form-control" id="CodigoPostal" name="CodigoPostal" value="@Model.CodigoPostal">
+                </div>
+                <div class="mb-3">
+                    <label for="FechaNacimiento" class="form-label">Fecha de nacimiento</label>
+                    @{
+                        CultureInfo provider = CultureInfo.InvariantCulture;
+                        var invalidDate = DateTime.ParseExact("01/01/0001", "dd/MM/yyyy", provider).Add(DateTime.Now.TimeOfDay);
+                        if (invalidDate.Date.ToString("dd/MM/yyyy") == Model.FechaNacimiento.ToString("dd/MM/yyyy"))
+                        {
+                            Model.FechaNacimiento = DateTime.Now;
+                        }
+                    }
+                    <input type="text" class="form-control" name="FechaNacimiento" value="@Model.FechaNacimiento.ToString("dd/MM/yyyy")">
                 </div>
             </div>
             <input type="hidden" class="form-control" id="Id" name="Id" value="@Model.Id">
