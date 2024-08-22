@@ -83,8 +83,6 @@ public class ClienteController : Controller
             {
                 newCli = ClienteRepository.InsertCliente(newCli);
             }
-            //context.Update(cliente);
-            //context.SaveChanges();
         }
         catch (Exception ex)
         {

@@ -21,6 +21,8 @@ public partial class GestorPetshopContext : DbContext
 
     public virtual DbSet<Juguete> Juguetes { get; set; }
 
+    public virtual DbSet<Pedido> Pedidos { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Initial Catalog=GestorPetshop;Integrated Security=true;Trusted_Connection=True;TrustServerCertificate=True");
@@ -69,6 +71,20 @@ public partial class GestorPetshopContext : DbContext
             entity.Property(e => e.Title)
                 .HasMaxLength(255)
                 .HasColumnName("title");
+        });
+
+        modelBuilder.Entity<Pedido>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Pedido__3214EC07AABEED60");
+
+            entity.ToTable("Pedido");
+
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.Total).HasColumnType("money");
+
+            entity.HasOne(d => d.Cliente).WithMany(p => p.Pedidos)
+                .HasForeignKey(d => d.ClienteId)
+                .HasConstraintName("FK_PedidoCliente");
         });
 
         OnModelCreatingPartial(modelBuilder);

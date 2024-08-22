@@ -1,0 +1,73 @@
+﻿@model GestorPetshop.ViewModels.ItemsViewModel
+
+<div>Esta es la vista de pedido</div>
+<div>Juguetes</div>
+<div class="row">
+    <table class="arrowes-table table-striped" style="width:50%;">
+        <thead>
+            <tr>
+                <th scope="col" style="width:10%"></th>
+                <th scope="col"></th>
+                <th scope="col" style="width:30%">Title</th>
+                <th scope="col" style="width:30%">Precio</th>
+                <th scope="col" style="width:30%">Stock</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            @for (var i= 0; i < Model.ListadoJuguetes.Count; i+=1)
+            {
+                <tr id="row_@Model.ListadoJuguetes[i].Id">
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="radio_@Model.ListadoJuguetes[i].Id" value="@Model.ListadoJuguetes[i].Id">
+                            <label class="form-check-label" for="radio_@Model.ListadoJuguetes[i].Id"></label>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <input id="jugueteId_@Model.ListadoJuguetes[i].Id" type="hidden" name="jugueteId_@Model.ListadoJuguetes[i].Id" value="@Model.ListadoJuguetes[i].Id">
+                        </div>
+                    </td>
+                    <td id="jugueteTitle_@Model.ListadoJuguetes[i].Id">@Model.ListadoJuguetes[i].Title</td>
+                    <td id="juguetePrecio_@Model.ListadoJuguetes[i].Id">@Model.ListadoJuguetes[i].Precio.ToString("0.00")</td>
+                    <td id="jugueteStock_@Model.ListadoJuguetes[i].Id">@Model.ListadoJuguetes[i].Stock</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>Comestibles</div>
+<div class="row">
+    <table class="arrowes-table table-striped" style="width:50%;">
+        <thead>
+            <tr>
+                <th scope="col" style="width:10%"></th>
+                <th scope="col"></th>
+                <th scope="col" style="width:30%">Title</th>
+                <th scope="col" style="width:30%">Precio</th>
+                <th scope="col" style="width:30%">Stock</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            @for (var i = 0; i < Model.ListadoComestibles.Count; i += 1)
+            {
+                <tr id="row_@Model.ListadoComestibles[i].Id">
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="radio_@Model.ListadoComestibles[i].Id" value="@Model.ListadoComestibles[i].Id">
+                            <label class="form-check-label" for="radio_@Model.ListadoComestibles[i].Id"></label>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <input id="jugueteId_@Model.ListadoComestibles[i].Id" type="hidden" name="jugueteId_@Model.ListadoComestibles[i].Id" value="@Model.ListadoComestibles[i].Id">
+                        </div>
+                    </td>
+                    <td id="jugueteTitle_@Model.ListadoComestibles[i].Id">@Model.ListadoComestibles[i].Title</td>
+                    <td id="juguetePrecio_@Model.ListadoComestibles[i].Id">@Model.ListadoComestibles[i].Precio.ToString("0.00")</td>
+                    <td id="jugueteStock_@Model.ListadoComestibles[i].Id">@Model.ListadoComestibles[i].Stock</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
