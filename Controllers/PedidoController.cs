@@ -2,6 +2,7 @@
 using GestorPetshop.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;
+using Telerik.SvgIcons;
 
 namespace GestorPetshop.Controllers
 {
@@ -27,28 +28,28 @@ namespace GestorPetshop.Controllers
             return View(vm);
         }
 
-        [HttpPost]
-        public ActionResult Modificar(Pedido pedidoModificado)
-        {
-            try
-            {
-                var i = 0;
-                //context.Pedidos.Update(pedidoModificado);
-                //context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
+        //[HttpPost]
+        //public ActionResult Modificar(Pedido pedidoModificado)
+        //{
+        //    try
+        //    {
+        //        var i = 0;
+        //        context.Pedidos.Update(pedidoModificado);
+        //        context.SaveChanges();
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-            }
-            return Json(pedidoModificado);
-        }
+        //    }
+        //    return Json(pedidoModificado);
+        //}
 
         [HttpPost]
-        public ActionResult Insertar(string productos) 
+        public ActionResult Calcular(string productos) 
         {
             if (string.IsNullOrEmpty(productos))
             {
-                return Json("No se recibieron productos");
+                return Json("0");
             }
             decimal total = 0;
             string[] array = productos.Split(',');
@@ -56,30 +57,41 @@ namespace GestorPetshop.Controllers
             for (int i = 0; i < array.Length; i++)
             {
                 string[] parts = array[i].Split('_');
-                string key = parts[1];
                 string value = parts[0];
-                keyValueDict[key] = value;
+                string key = parts[1] + value[0];
+                keyValueDict.Add(key, value);
             }
             foreach (var kvp in keyValueDict)
             {
+                var newKey = kvp.Key.Substring(0, kvp.Key.Length - 1);
                 if (kvp.Value == "Juguete") 
                 {
-                    total = (decimal)total + (context.Juguetes.First(c => c.Id == Convert.ToInt32(kvp.Key)).Precio);
+                    total = (decimal)total + (context.Juguetes.First(c => c.Id == Convert.ToInt32(newKey)).Precio);
                 }
                 else 
                 {
-                    total = (decimal)total + (context.Comestibles.First(c => c.Id == Convert.ToInt32(kvp.Key)).Precio);
+                    total = (decimal)total + (context.Comestibles.First(c => c.Id == Convert.ToInt32(newKey)).Precio);
                 }
-                //Crear nuevo Pedido
-                //Pedido pedidoNuevo = new Pedido();
-                //pedidoNuevo.Total = total;
-                //pedidoNuevo.Cliente = context.Clientes.Where(j => j.Id == 2).First(); //TODO: Fix getting Cliente
-                //DateTime now = DateTime.Now;
-                //pedidoNuevo.FechaCreacion = now;
-                //context.Pedidos.Add(pedidoNuevo);
-                //context.SaveChanges();
+                
             }
             return Json(total);
+        }
+
+        [HttpPost]
+        public ActionResult Insertar(decimal total)
+        {
+            if (total <= 0) {
+                throw new Exception("No hay elementos seleccionados!");
+            }
+            Pedido pedidoNuevo = new Pedido();
+            pedidoNuevo.Total = total;
+            pedidoNuevo.Cliente = context.Clientes.Where(j => j.Id == 2).First(); //TODO: Fix getting Cliente
+            DateTime now = DateTime.Now;
+            pedidoNuevo.FechaCreacion = now;
+            context.Pedidos.Add(pedidoNuevo);
+            context.SaveChanges();
+
+            return Json(pedidoNuevo);
         }
     }
 }
