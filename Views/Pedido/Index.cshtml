@@ -1,12 +1,15 @@
 ﻿@model GestorPetshop.ViewModels.ItemsViewModel
 
 <div>Esta es la vista de pedido</div>
-<!-- TODO: añadir ofertas -->
 <form class="w-50">
     <div class="mb-3">
         <label for="total" class="form-label">Total</label>
         <input type="money" class="form-control" id="total" aria-describedby="total" value="0">
-        <div id="totalHelp" class="form-text">Total autocalculado.</div>
+        <div id="totalHelp" class="form-text">Total del pedido.</div>
+    </div>
+    <div class="mb-3">
+        <label for="oferta" class="form-label">Oferta %</label>
+        <input type="number" class="form-control" id="oferta" aria-describedby="oferta" value="0">
     </div>
 </form>
 <div>Juguetes</div>
@@ -96,6 +99,7 @@
             }
             $("#calc_btn").bind("click", function () { 
                 var resultStr="";
+                var of = $("#oferta").val();
                 $("input[type=checkbox]:checked").each(function () {
                     resultStr = resultStr + this.id + ",";
                 });
@@ -105,7 +109,7 @@
                     type: 'POST',
                     url: '@Url.Action("Calcular", "Pedido")',
                     contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                    data: { productos: resultStr },
+                    data: { productos: resultStr, oferta : of },
                     success: function (result) {
                         $('#total').val(result);
                         console.log(result);

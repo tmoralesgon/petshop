@@ -45,13 +45,14 @@ namespace GestorPetshop.Controllers
         //}
 
         [HttpPost]
-        public ActionResult Calcular(string productos) 
+        public ActionResult Calcular(string productos, string oferta) 
         {
             if (string.IsNullOrEmpty(productos))
             {
                 return Json("0");
             }
             decimal total = 0;
+            int of = Convert.ToInt32(oferta);
             string[] array = productos.Split(',');
             Dictionary<string, string> keyValueDict = new Dictionary<string, string>();
             for (int i = 0; i < array.Length; i++)
@@ -72,7 +73,11 @@ namespace GestorPetshop.Controllers
                 {
                     total = (decimal)total + (context.Comestibles.First(c => c.Id == Convert.ToInt32(newKey)).Precio);
                 }
-                
+            }
+            if (of > 0) 
+            {
+                var descuento = total * of / 100;
+                total = total - descuento;
             }
             return Json(total);
         }
