@@ -22,6 +22,14 @@ namespace GestorPetshop.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            PedidosViewModel vm = new PedidosViewModel();
+            vm.ListadoPedidos = context.Pedidos.ToList();
+            return View(vm);
+        }
+
+        [HttpGet]
+        public IActionResult Ficha()
+        {
             ItemsViewModel vm = new ItemsViewModel();
             vm.ListadoJuguetes = context.Juguetes.ToList();
             vm.ListadoComestibles = context.Comestibles.ToList();
